@@ -110,7 +110,7 @@ public class Student implements Comparable<Student> {
         if (!this.lastName.equals(o.lastName)) {
             return this.lastName.compareTo(o.lastName);
         } else if (!this.firstName.equals(o.firstName)) {
-            return this.firstName.compareTo(o.lastName);
+            return this.firstName.compareTo(o.firstName);
         } else {
             return this.PID.compareTo(o.PID);
         }

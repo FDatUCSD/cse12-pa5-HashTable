@@ -24,6 +24,8 @@ public class Sanctuary {
         "Num cannot be more than the number of animals of the species";
     private static final String SPECIES_NOT_IN_SANCTUARY =
         "Species is not in sanctuary";
+    private static final String SPECIES_LARGER_THAN_ANIMAL_MESSAGE =
+        "Max species cannot be more than max animals";
     /* Instance variables */
     HashMap<String, Integer> sanctuary;
     private final int maxAnimals;
@@ -38,6 +40,11 @@ public class Sanctuary {
     public Sanctuary(int maxAnimals, int maxSpecies) {
         if (maxAnimals <= 0 || maxSpecies <= 0) {
             throw new IllegalArgumentException(LESS_THAN_ZERO_MESSAGE);
+        }
+        if (maxSpecies > maxAnimals) {
+            throw new IllegalArgumentException(
+                SPECIES_LARGER_THAN_ANIMAL_MESSAGE
+            );
         }
         this.maxAnimals = maxAnimals;
         this.maxSpecies = maxSpecies;
@@ -109,7 +116,9 @@ public class Sanctuary {
         if (species == null) {
             throw new IllegalArgumentException(NULL_ARG_MESSAGE);
         }
-        if ( // if have space for new species and can accomodate all additions
+        if (getTotalAnimals() == getMaxAnimals()) {
+            return num;
+        } else if ( //have space for new species and can accomodate all addition
             getTotalAnimals() + num <= getMaxAnimals() &&
             getTotalSpecies() + 1 <= getMaxSpecies()
         ) {
@@ -122,13 +131,13 @@ public class Sanctuary {
             int diff = getMaxAnimals() - getTotalAnimals();
             this.sanctuary.put(species, countForSpecies(species) + diff);
             return num - diff;
-        } else if (
+        } else if ( // the rescued species is not new and can be added
             this.sanctuary.containsKey(species) &&
             getTotalAnimals() + num <= getMaxAnimals()
         ) {
             this.sanctuary.put(species, countForSpecies(species) + num);
             return 0;
-        } else if (
+        } else if ( // if species is not new but not all can be added
             this.sanctuary.containsKey(species) &&
             getTotalAnimals() + num > getTotalAnimals()
         ) {

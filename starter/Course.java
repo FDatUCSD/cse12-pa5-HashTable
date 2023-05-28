@@ -19,6 +19,9 @@ import java.util.HashSet;
 public class Course {
 
     private static final String NULL_STUDENT_MESSAGE = "Student cannot be null";
+    private static final String NULL_ARG_MESSAGE = "Arguments cannot be null";
+    private static final String LESS_THAN_ZERO_MESSAGE =
+        "Capacity cannot be less than zero";
     /* Instance variables */
     HashSet<Student> enrolled;
     private final int capacity;
@@ -37,6 +40,12 @@ public class Course {
         String description,
         int capacity
     ) {
+        if (department == null || number == null || description == null) {
+            throw new IllegalArgumentException(NULL_ARG_MESSAGE);
+        }
+        if (capacity <= 0) {
+            throw new IllegalArgumentException(LESS_THAN_ZERO_MESSAGE);
+        }
         this.department = department;
         this.number = number;
         this.description = description;
@@ -87,6 +96,7 @@ public class Course {
         if (student == null) {
             throw new IllegalArgumentException(NULL_STUDENT_MESSAGE);
         }
+        if (enrolled.contains(student)) return false;
 
         if (isFull()) return false;
 

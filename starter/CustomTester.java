@@ -21,7 +21,7 @@ public class CustomTester {
 
     // Test variables
     // Student
-    private Student st1, st2;
+    private Student st1, st2, st3;
     private Object nonSt;
 
     // Course
@@ -39,6 +39,7 @@ public class CustomTester {
     public void setUp() throws Exception {
         st1 = new Student("Noah", "Ali", "A12345678");
         st2 = new Student("Yasmeen", "Ahmad", "A12345679");
+        st3 = new Student("John", "Bovi", "A87654321");
         nonSt = new Object();
 
         cse12 = new Course("CSE", "12", "Data Structure", 1);
@@ -54,6 +55,38 @@ public class CustomTester {
     }
 
     // ----------------------Student-------------------------
+    @Test
+    public void testStudentConstNullArgs() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student(null, null, null)
+        );
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student(null, "hi", "hi")
+        );
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student("hi", null, "hi")
+        );
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student("hi", "hi", null)
+        );
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student(null, null, "hi")
+        );
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student(null, "hi", null)
+        );
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Student("hi", null, null)
+        );
+    }
+
     /**
      * Test if false because null
      */
@@ -157,8 +190,14 @@ public class CustomTester {
 
     @Test
     public void testCourseDrop() {
-        cse12.enrolled.add(st1);
-        assertFalse("false because student is not enrolled", cse12.drop(st2));
+        Course cse11 = new Course("CSE", "12", "Basics", 3);
+        cse11.enroll(st1);
+        cse11.enroll(st2);
+        assertTrue(cse11.drop(st2));
+        assertFalse("false because student is not enrolled", cse11.drop(st3));
+        assertFalse(cse11.enrolled.contains(st2));
+        assertFalse(cse11.enrolled.contains(st3));
+        assertTrue(cse11.enrolled.contains(st1));
     }
 
     @Test
@@ -204,6 +243,10 @@ public class CustomTester {
         for (int i = 0; i < 3; i++) {
             course1.enroll(new Student("Student" + i, "st", "A1"));
         }
+        ArrayList<Student> roster = course1.getRoster();
+        for (int i = 0; i < roster.size(); i++) {
+            assertEquals(arr.get(i), roster.get(i));
+        }
     }
 
     // ----------------------------Sanctuary----------------------------
@@ -214,6 +257,10 @@ public class CustomTester {
         assertEquals("Should be 50", 50, sanct1.getMaxAnimals());
         assertEquals("should be 3", 3, sanct1.getMaxSpecies());
         assertEquals(hm, sanct1.sanctuary);
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new Sanctuary(-1, 10)
+        );
     }
 
     /**
@@ -245,6 +292,15 @@ public class CustomTester {
         assertEquals((Integer) 20, (Integer) sanctPartial.sanctuary.get("Dog"));
         sanctPartial.release("Dog", 10);
         assertEquals((Integer) 10, (Integer) sanctPartial.sanctuary.get("Dog"));
+    }
+
+    @Test
+    public void testSanctRescueMaxAnimalsNewSpecies() {
+        Sanctuary full = new Sanctuary(100, 2);
+        assertEquals(0, full.rescue("Dog", 100));
+        assertEquals(100, (full.sanctuary.get("Dog")).intValue());
+        assertEquals(20, full.rescue("Cats", 20));
+        assertFalse(full.sanctuary.containsKey("Cats"));
     }
 
     @Test
